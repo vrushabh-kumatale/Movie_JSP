@@ -1,7 +1,28 @@
 package com.sunbeam.daos;
 
+import java.io.InputStream;
+import java.io.Reader;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.NClob;
+import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
+import java.sql.Ref;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.RowId;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.SQLXML;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import com.sunbeam.pojos.Users;
@@ -77,7 +98,26 @@ public class UsersDaoImpl extends Dao implements UserDao {
 
 	@Override
 	public List<Users> getSharedUsers(int id) {
-		// TODO Auto-generated method stub
+		String sql = "select user_id, first_name, last_name, email from users where user_id!=?";
+		List<Users> list = new ArrayList<Users>();
+		try(PreparedStatement stmt = con.prepareStatement(sql)) {
+			stmt.setInt(1, id);
+			ResultSet set = stmt.executeQuery();
+			while(set.next())
+			{
+				Users user  = new Users();
+				user.setId(set.getInt(1));
+				user.setFirstName(set.getString(2));
+				user.setLastName(set.getString(3));
+				user.setEmail(set.getString(4));
+				list.add(user);
+			}
+			return list;
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 		return null;
 	}
 
